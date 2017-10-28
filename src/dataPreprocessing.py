@@ -12,7 +12,7 @@ class DataPreprocessing:
 # |----------------------------------------------------------------------------|
 # preprocessData
 # |----------------------------------------------------------------------------|
-    def preprocessData(self, dirPath):
+    def preprocessTrainingData(self, dirPath):
         """
         Input: dirPath
         output: classTokenList, uniqueTokenList, nDocsInClassArr, dirNameList
@@ -106,4 +106,36 @@ class DataPreprocessing:
                                                     stopwords.words('english')]
         return filteredTokenList
     
-#|------------------------tokenizingString -ends----------------------------------|    
+#|------------------------tokenizingString -ends-------------------------------|    
+#|-----------------------------------------------------------------------------|
+# preprocessTestingFile
+#|-----------------------------------------------------------------------------|
+    def preprocessTestingData(self, testingDirPath):
+        """
+        input: testingDirPath
+        
+        Given function walks through all files in testingDir Path, and provides
+        tokens of eachFile
+        """
+        from __builtin__ import set
+        fileTokenDict = {}
+        for currentRoot,dirs,files in os.walk(testingDirPath):
+        
+            #walking through all files in the currentDir
+            for currentFile in files:
+                #finding file path of current Directory and reading its content
+                currentFilePath = os.path.join(currentRoot, currentFile)
+                myIO = MyIO()
+                currentInputStr = myIO.readDoc(docPath = currentFilePath)
+#                 #debug
+#                 print("currentInputStr : {}".format(currentInputStr))
+#                 #debug -ends
+                #finding token of given file
+                fileTokenList = self._tokenizationFilter(rowStr=currentInputStr)
+                #adding given file token list to class token list
+                fileTokenDict[currentFile] = list(set(fileTokenList))
+                
+            #for currentFile -ends
+        #for currentRoot, dirs, files -ends
+        return fileTokenDict
+#|------------------------preprocessTestingFile -ends--------------------------|    
