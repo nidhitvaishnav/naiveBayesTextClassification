@@ -3,3 +3,4 @@
 src/dataPreprocessing.pyc
 src/myIO.pyc
 src/__pycache__/
+src/TrainMultinomialNaiveBayesIO.pyc

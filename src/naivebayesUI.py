@@ -27,7 +27,8 @@ class NaiveBayesUI:
         
         dataPreprocessing = DataPreprocessing()
         classTokenList, uniqueTokenList, nDocsInClassArr, dirNameList = \
-                            dataPreprocessing.preprocessData(trainingDirPath)
+                            dataPreprocessing.preprocessTrainingData(\
+                                                                trainingDirPath)
         
         #debug
         print ('classTokenList = {} '.format(classTokenList))
@@ -39,13 +40,19 @@ class NaiveBayesUI:
         totalDocs=np.sum(nDocsInClassArr)
         totalTermsInSllClasses = len(uniqueTokenList)
         trainMultinomialNaiveBayes = TrainMultinomialNaiveBayes()
-        priorProb,condProbList,NoOfClasses=trainMultinomialNaiveBayes.trainNaiveBayes(classlist=classTokenList,\
-                                                   NoOfDocsInClass=nDocsInClassArr,\
-                                                   totalDocs=totalDocs,\
-                                                   totalTermsInAllClasses = totalTermsInSllClasses)
-        TestVocab=['Chinese', 'Chinese', 'Chinese', 'Tokyo', 'Japan']
-        predictedClass=trainMultinomialNaiveBayes.applyMultinomialNaiveBayes(NoOfClasses=NoOfClasses, priorProb=priorProb,\
-                                                                              condProbList=condProbList, TestVocab=TestVocab)
+        priorProb,condProbList,NoOfClasses=trainMultinomialNaiveBayes.\
+                                    trainNaiveBayes(classlist=classTokenList,\
+                                               NoOfDocsInClass=nDocsInClassArr,\
+                                               totalDocs=totalDocs,\
+                                               totalTermsInAllClasses = \
+                                                        totalTermsInSllClasses)
+        
+        testingFileTokenDict = dataPreprocessing.preprocessTestingData(testingDirPath = testingDirPath)
+        #debug
+        print ('testingFileTokenDict = {} '.format(testingFileTokenDict))
+        #debug -ends
+#         predictedClass=trainMultinomialNaiveBayes.applyMultinomialNaiveBayes(NoOfClasses=NoOfClasses, priorProb=priorProb,\
+#                                                                               condProbList=condProbList, TestVocab=testingFileTokenDict)
         
         
         
