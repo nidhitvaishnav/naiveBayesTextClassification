@@ -16,6 +16,7 @@ class MyIO:
 #             print("line : {}".format(myLine[0]))
 #             #debug -ends 
             if (writeFlag):
+            
                 outputStr = outputStr+" "+myLine
             #if writeFlag -ends
             
@@ -24,7 +25,6 @@ class MyIO:
             #if myLine -ends
         #for myLine -ends
         return outputStr
-    
 #|--------------------------readDoc -ends-------------------------|
 
 

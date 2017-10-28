@@ -50,3 +50,4 @@ class DataPreprocessing:
 if __name__ == '__main__':
     dataPreprocessing = DataPreprocessing()
     dataPreprocessing.preprocessData('../dataset/5news-bydate-train')
+    
