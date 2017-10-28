@@ -2,3 +2,4 @@
 .pydevproject
 src/dataPreprocessing.pyc
 src/myIO.pyc
+src/__pycache__/

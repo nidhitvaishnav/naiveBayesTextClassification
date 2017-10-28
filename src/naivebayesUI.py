@@ -2,6 +2,7 @@ import sys
 import os
 import numpy as np
 from dataPreprocessing import DataPreprocessing
+from TrainMultinomialNaiveBayesIO import TrainMultinomialNaiveBayes
 
 class NaiveBayesUI:
     
@@ -25,14 +26,28 @@ class NaiveBayesUI:
         """
         
         dataPreprocessing = DataPreprocessing()
-        completeTokenList, uniqueTokenList, nDocsInClassArr = \
+        classTokenList, uniqueTokenList, nDocsInClassArr, dirNameList = \
                             dataPreprocessing.preprocessData(trainingDirPath)
         
         #debug
-        print ('tokenList = {} '.format(completeTokenList))
+        print ('classTokenList = {} '.format(classTokenList))
         print ('uniqueTokenList = {}'.format(uniqueTokenList))
         print ('nDocInClassArr = {}'.format(nDocsInClassArr))
+        print ('dirNameList = {}'.format(dirNameList))
         #debug -ends
+#         
+        totalDocs=np.sum(nDocsInClassArr)
+        totalTermsInSllClasses = len(uniqueTokenList)
+        trainMultinomialNaiveBayes = TrainMultinomialNaiveBayes()
+        priorProb,condProbList,NoOfClasses=trainMultinomialNaiveBayes.trainNaiveBayes(classlist=classTokenList,\
+                                                   NoOfDocsInClass=nDocsInClassArr,\
+                                                   totalDocs=totalDocs,\
+                                                   totalTermsInAllClasses = totalTermsInSllClasses)
+        predictedClass=trainMultinomialNaiveBayes.applyMultinomialNaiveBayes(NoOfClasses=NoOfClasses, priorProb=priorProb,\
+                                                                              condProbList=condProbList, TestVocab)
+        
+        
+        
 #|------------------------naiveBayesTextClassification -ends-------------------|                   
     
     
@@ -62,8 +77,10 @@ if __name__ == '__main__':
             trainingDirPath = sys.argv[1]
             testingDirPath = sys.argv[2]
         else:
-            trainingDirPath= '../dataset/5news-bydate-train'
-            testingDirPath='../dataset/5news-bydate-test'
+#             trainingDirPath= '../dataset/5news-bydate-train'
+#             testingDirPath='../dataset/5news-bydate-test'
+            trainingDirPath= '../dataset/training'
+            testingDirPath='../dataset/testing'
         
         naivebayesui = NaiveBayesUI()
         naivebayesui.naiveBayesTextClassification(trainingDirPath, testingDirPath)

@@ -15,22 +15,27 @@ class DataPreprocessing:
     def preprocessData(self, dirPath):
         """
         Input: dirPath
-        output: completeTokenList, uniqueTokenList, nDocsInClassArr
-        completeTokenList is a list which has sublist of all tokens of class 
+        output: classTokenList, uniqueTokenList, nDocsInClassArr, dirNameList
+        classTokenList is a list which has sublist of all tokens of classes 
         of given directory
-        uniqueTokenList is a list which has sublist of all unique tokens of class 
+        uniqueTokenList is a list which has all unique tokens of all classes 
         of given directory
         nDocsInClassArr is a numpy array with number of documents of each class
+        dirNameList provides all directory names (which are class names here),
+        from current dirPath (training or testing)
         
         given folder takes dirPath, walk through all the directories,
         read its files, tokenize them and return the combine tokens of all
         classes, unique token list, and number of documents in each class
         """
         #variables
-        completeTokenList = []
-        uniqueTokenList = []
+        classTokenList = []
+        generalTokenList = []
         nDocsInClassList = []
-        
+        dirNameList = next(os.walk(dirPath))[1]
+#         #debug
+#         print("dirNameList : {}".format(dirNameList))
+#         #debug -ends
         #walking through all internal directories, reading files, finding tokens
         for currentRoot,dirs,files in os.walk(dirPath):
             #finding number of files in given directory and assigning it to list 
@@ -38,33 +43,39 @@ class DataPreprocessing:
             nDocsInClassList.append(nFiles)
         
             #walking through all files in the currentDir
-            classTokenList = []
+            currentClassTokenList = []
             for currentFile in files:
                 #finding file path of current Directory and reading its content
                 currentFilePath = os.path.join(currentRoot, currentFile)
                 myIO = MyIO()
                 currentInputStr = myIO.readDoc(docPath = currentFilePath)
+#                 #debug
+#                 print("currentInputStr : {}".format(currentInputStr))
+#                 #debug -ends
                 #finding token of given file
                 fileTokenList = self._tokenizationFilter(rowStr=currentInputStr)
                 #adding given file token list to class token list
-                classTokenList.extend(fileTokenList)
+                currentClassTokenList.extend(fileTokenList)
+                generalTokenList.extend(fileTokenList)
             #for currentFile -ends
-            #appending classTokenList to completeTokenList
-            completeTokenList.append(classTokenList)
-            #finding unique class token list
-            uniqueClassTokenList = list(set(classTokenList))
-            uniqueTokenList.append(uniqueClassTokenList)
+            #appending currentClassTokenList to classTokenList
+            classTokenList.append(currentClassTokenList)
+#             #putting all tokens in one token list
+#             generalTokenList.extend(classTokenList)
         #for currentRoot,dirs,files -ends
-        
+#         #debug
+#         print("generalTokenList : {}".format(generalTokenList))
+#         #debug -ends
+        uniqueTokenList = list(set(generalTokenList))
         #Assuming that our currentFile path is a train/test path, which contains
         #all the classDir, and no files, and the classDir contains all the file
         #Now, root directory does not provide class info. So removing its data
-        completeTokenList.pop(0)
-        uniqueTokenList.pop(0)
+        classTokenList.pop(0)
+#         uniqueTokenList.pop(0)
         nDocsInClassList.pop(0)
         nDocsInClassArr = np.array(nDocsInClassList)
         #returning outputs
-        return completeTokenList, uniqueClassTokenList, nDocsInClassArr
+        return classTokenList, uniqueTokenList, nDocsInClassArr, dirNameList
 #|--------------------------preprocessData -ends-------------------------------|
 #|-----------------------------------------------------------------------------|
 # tokenizingString

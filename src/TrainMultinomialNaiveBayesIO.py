@@ -10,7 +10,7 @@ class TrainMultinomialNaiveBayes:
 # |---------------------------------------------------------------|
 # trainNaiveBayes
 # |---------------------------------------------------------------|
-    def trainNaiveBayes(self,classlist,NoOfDocsInClass,totalDocs,totalTermsInAllClasses=6):
+    def trainNaiveBayes(self,classlist,NoOfDocsInClass,totalDocs,totalTermsInAllClasses):
         """
         This method calculates prior probability of each class and conditional probability for each term
         """
