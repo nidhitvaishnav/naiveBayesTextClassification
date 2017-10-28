@@ -43,8 +43,9 @@ class NaiveBayesUI:
                                                    NoOfDocsInClass=nDocsInClassArr,\
                                                    totalDocs=totalDocs,\
                                                    totalTermsInAllClasses = totalTermsInSllClasses)
+        TestVocab=['Chinese', 'Chinese', 'Chinese', 'Tokyo', 'Japan']
         predictedClass=trainMultinomialNaiveBayes.applyMultinomialNaiveBayes(NoOfClasses=NoOfClasses, priorProb=priorProb,\
-                                                                              condProbList=condProbList, TestVocab)
+                                                                              condProbList=condProbList, TestVocab=TestVocab)
         
         
         

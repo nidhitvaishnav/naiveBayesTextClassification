@@ -12,11 +12,12 @@ class TrainMultinomialNaiveBayes:
 # |---------------------------------------------------------------|
     def trainNaiveBayes(self,classlist,NoOfDocsInClass,totalDocs,totalTermsInAllClasses):
         """
-        This method calculates prior probability of each class and conditional probability for each term
+        This method calculates prior probability of each class and conditional probability for each term for each class
         """
         priorProb=np.array([])
         NoOfClasses=len(classlist)
         condProbList=[]
+        
         
         for classIndex,classk in enumerate(classlist):
             Nc=NoOfDocsInClass[classIndex]
@@ -60,7 +61,9 @@ class TrainMultinomialNaiveBayes:
             condProbList.append(TermAndProbList)
         #for classIndex,classk ends       
                 
-            
+            #debug
+            print("condProbList : {}".format(condProbList))
+            #debug -ends
                 
         return priorProb,condProbList,NoOfClasses;
 #|--------------------------trainNaiveBayes -ends-------------------|
@@ -73,27 +76,36 @@ class TrainMultinomialNaiveBayes:
         This method takes TestVocab for a document and predicts the class in which it may belong to
         """
         score=np.array([])
-        vocabset = set(TestVocab)
-        
         
         for classIndex in range(0,NoOfClasses):
 #                 #debug
 #                 print("priorProb[classIndex] : {}".format(priorProb[classIndex]))
 #                 #debug -ends
-            newscore=np.append(score,math.log10(priorProb[classIndex]))
-        
-            for term in vocabset:
-                newscore=newscore+math.log10(condProbList[classIndex][1])
-                score=np.append(score,newscore)
-                
+            newscore=float(math.log(priorProb[classIndex]))
+            print("-------------------------------------------------------------------------------")
+            for term in TestVocab:
+                #debug
+                print("condProbList[classIndex][termIndex] : {}".format(condProbList[classIndex][1]))
+                #debug -ends
+                #debug
+                print("classIndex : {}".format(classIndex))
+                #debug -ends
+                #debug
+                print("term : {}".format(term))
+                #debug -ends
+                newscore=float(newscore)+float(math.log(condProbList[classIndex][1]))
             #for ends
-        #for ends
+            score=np.append(score,newscore)
         
+        #for ends 
+        #debug
+        print("score : {}".format(score))
+        #debug -ends
         predictedClass=np.argmax(score)
         #debug
         print("predictedClass : {}".format(predictedClass))
         #debug -ends
-                
+                   
                 
                     
             
@@ -133,7 +145,7 @@ if __name__ == '__main__':
     print("condProbList : {}".format(condProbList))
     #debug -ends
     
-    trainMultinomialNaiveBayes.applyMultinomialNaiveBayes(NoOfClasses,priorProb,condProbList,TestVocab)
+    predictedClass=trainMultinomialNaiveBayes.applyMultinomialNaiveBayes(NoOfClasses,priorProb,condProbList,TestVocab)
     
     
     
