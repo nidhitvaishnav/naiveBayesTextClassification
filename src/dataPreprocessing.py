@@ -60,6 +60,7 @@ class DataPreprocessing:
             #for currentFile -ends
             #appending currentClassTokenList to classTokenList
             classTokenList.append(currentClassTokenList)
+            
 #             #putting all tokens in one token list
 #             generalTokenList.extend(classTokenList)
         #for currentRoot,dirs,files -ends
@@ -75,7 +76,7 @@ class DataPreprocessing:
         nDocsInClassList.pop(0)
         nDocsInClassArr = np.array(nDocsInClassList)
         #returning outputs
-        return classTokenList, uniqueTokenList, nDocsInClassArr, dirNameList
+        return classTokenList,uniqueTokenList, nDocsInClassArr, dirNameList
 #|--------------------------preprocessData -ends-------------------------------|
 #|-----------------------------------------------------------------------------|
 # tokenizingString
@@ -133,9 +134,10 @@ class DataPreprocessing:
                 #finding token of given file
                 fileTokenList = self._tokenizationFilter(rowStr=currentInputStr)
                 #adding given file token list to class token list
-                fileTokenDict[currentFile] = list(set(fileTokenList))
+                #fileTokenDict[currentFile] = list(set(fileTokenList))
+                #fileTokenDict[currentFile] = fileTokenList
                 
             #for currentFile -ends
         #for currentRoot, dirs, files -ends
-        return fileTokenDict
+        return fileTokenList,currentFile
 #|------------------------preprocessTestingFile -ends--------------------------|    
