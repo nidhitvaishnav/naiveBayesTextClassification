@@ -113,11 +113,11 @@ class DataPreprocessing:
     def preprocessTestingData(self, testingDirPath):
         """
         input: testingDirPath
-        
+        output: fileTokenDict
         Given function walks through all files in testingDir Path, and provides
-        tokens of eachFile
+        unique tokens of eachFile and store them in the form, key = fileName,
+        value= uniqueTokenList
         """
-        from __builtin__ import set
         fileTokenDict = {}
         for currentRoot,dirs,files in os.walk(testingDirPath):
         

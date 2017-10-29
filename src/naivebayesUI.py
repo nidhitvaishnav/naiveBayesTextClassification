@@ -29,14 +29,14 @@ class NaiveBayesUI:
         classTokenList, uniqueTokenList, nDocsInClassArr, dirNameList = \
                             dataPreprocessing.preprocessTrainingData(\
                                                                 trainingDirPath)
-        
+         
         #debug
         print ('classTokenList = {} '.format(classTokenList))
         print ('uniqueTokenList = {}'.format(uniqueTokenList))
         print ('nDocInClassArr = {}'.format(nDocsInClassArr))
         print ('dirNameList = {}'.format(dirNameList))
         #debug -ends
-#         
+         
         totalDocs=np.sum(nDocsInClassArr)
         totalTermsInSllClasses = len(uniqueTokenList)
         trainMultinomialNaiveBayes = TrainMultinomialNaiveBayes()
@@ -51,8 +51,8 @@ class NaiveBayesUI:
         #debug
         print ('testingFileTokenDict = {} '.format(testingFileTokenDict))
         #debug -ends
-#         predictedClass=trainMultinomialNaiveBayes.applyMultinomialNaiveBayes(NoOfClasses=NoOfClasses, priorProb=priorProb,\
-#                                                                               condProbList=condProbList, TestVocab=testingFileTokenDict)
+        predictedClass=trainMultinomialNaiveBayes.applyMultinomialNaiveBayes(NoOfClasses=NoOfClasses, priorProb=priorProb,\
+                                                                              condProbList=condProbList, TestVocab=testingFileTokenDict)
         
         
         
