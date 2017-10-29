@@ -73,8 +73,9 @@ class TrainMultinomialNaiveBayes:
             '''for each term in test vocabulary, probability score of class is modified by adding conditional probability 
             of that term corresponding to a particular class'''
             for term in TestVocab:
-                probVal = classCondProbDict[term]
-                newscore=float(newscore)+float(math.log(probVal))
+                probVal = classCondProbDict.get(term, None)
+                if (probVal!=None):
+                    newscore=float(newscore)+float(math.log(probVal))
             #for ends
             score=np.append(score,newscore)
         #for ends 
@@ -82,9 +83,72 @@ class TrainMultinomialNaiveBayes:
         predictedClass=np.argmax(score)
         
         return predictedClass
-#|--------------------------applyMultinomialNaiveBayes -ends------------------------|
-    
-    
+#|--------------------------applyMultinomialNaiveBayes -ends-------------------|
+#|-----------------------------------------------------------------------------|
+# classifyAllDocs
+#|-----------------------------------------------------------------------------|
+    def classifyAllDocs(self, fileTokenDict, classNameList, NoOfClasses,\
+                                 priorProbArr, condProbList):
+        """
+        input:  fileTokenDict is a dict containing file name as key and 
+                file token as value
+                classNameList is a list containing names of all classes
+        output: fileClassDict which is a dict containing file name as key and 
+                file class as value
+        
+        given function is a wrapper function for applyMultinomialNaiveBayes(),
+        and call it for all files in the testing dataset, and it matches the
+        class number with classNameList and provides fileClassDict
+        """
+        fileClassDict = {}
+        #for all file call applyMultinomialNaiveBayes()
+        for key in fileTokenDict:
+            testVocab = fileTokenDict[key]
+            currentPredictedClassDig=self.applyMultinomialNaiveBayes(\
+                                                NoOfClasses=NoOfClasses,\
+                                                priorProb=priorProbArr,\
+                                                condProbList=condProbList,\
+                                                TestVocab=testVocab)
+            #match currentPredictedClassDig with class name and store it in the
+            #fileClassDict
+            currentClassVal = classNameList[currentPredictedClassDig]
+            fileClassDict[key]=currentClassVal
+        #for key ends
+        
+        return fileClassDict
+#|------------------------classifyAllDocs -ends--------------------------------|    
+#|-----------------------------------------------------------------------------|
+# findAccuracy
+#|-----------------------------------------------------------------------------|
+    def findAccuracy(self, filePredictedClassDict, fileActualClassDict):
+        """
+        input:  filePredictedCLassDict dict where key=fileName, 
+                                                    value = predicted class name
+                fileActualClassDict dict where key = fileName,
+                                               value = actual class name
+        output: accuracy
+        given function matches predicted and actual class value for each file
+        and based on that returns accuracy
+        """
+        #initializing variables
+        correctPrediction = 0
+        inCorrectPrediction = 0
+        totalFiles = len(filePredictedClassDict)
+        #compare each files from filePredictedClassDict with fileActualClassDict
+        #and increment related counters
+        for key in filePredictedClassDict:
+            if(filePredictedClassDict[key]==fileActualClassDict[key]):
+                correctPrediction+=1
+            else:
+                inCorrectPrediction+=1
+            #if comparison ends
+        #for key -ends
+        
+        #accuracy: (correctVal)/totalVal
+        predictionAccuracy = float(correctPrediction)/float(totalFiles)
+        
+        return predictionAccuracy, correctPrediction, inCorrectPrediction
+#|------------------------findAccuracy -ends-----------------------------------|    
     
     
     

@@ -98,7 +98,9 @@ class DataPreprocessing:
         alphaTokenList = []
         for currentToken in alnumTokenList:
             if(currentToken.isdigit() is False):
+                currentToken=currentToken.lower()
                 alphaTokenList.append(currentToken)
+            
             #if currentToken -ends
         #for currentToken -ends
         
@@ -113,19 +115,22 @@ class DataPreprocessing:
 #|-----------------------------------------------------------------------------|
     def preprocessTestingData(self, testingDirPath):
         """
-        input: testingDirPath
+        input: testingDirPath, fileActualClassDict
         output: fileTokenDict
         Given function walks through all files in testingDir Path, and provides
         unique tokens of eachFile and store them in the form, key = fileName,
         value= uniqueTokenList
         """
         fileTokenDict = {}
+        fileActualClassDict = {}
         for currentRoot,dirs,files in os.walk(testingDirPath):
-        
+            
             #walking through all files in the currentDir
             for currentFile in files:
+                
                 #finding file path of current Directory and reading its content
                 currentFilePath = os.path.join(currentRoot, currentFile)
+                
                 myIO = MyIO()
                 currentInputStr = myIO.readDoc(docPath = currentFilePath)
 #                 #debug
@@ -134,10 +139,13 @@ class DataPreprocessing:
                 #finding token of given file
                 fileTokenList = self._tokenizationFilter(rowStr=currentInputStr)
                 #adding given file token list to class token list
-                #fileTokenDict[currentFile] = list(set(fileTokenList))
-                #fileTokenDict[currentFile] = fileTokenList
-                
+#                 fileTokenDict[currentFile] = list(set(fileTokenList))
+                fileTokenDict[currentFile] = fileTokenList
+                #assigning actual class value
+                fileActualClassDict[currentFile] = currentRoot.split(\
+                                                                os.path.sep)[-1]
+
             #for currentFile -ends
         #for currentRoot, dirs, files -ends
-        return fileTokenList,currentFile
+        return fileTokenDict, fileActualClassDict
 #|------------------------preprocessTestingFile -ends--------------------------|    

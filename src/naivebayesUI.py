@@ -26,37 +26,55 @@ class NaiveBayesUI:
         """
         
         dataPreprocessing = DataPreprocessing()
-        classTokenList,uniqueTokenList, nDocsInClassArr, dirNameList = \
+        print ('STATUS: pre-processing of training data begin:')
+        classTokenList,uniqueTokenList, nDocsInClassArr, classNameList = \
                             dataPreprocessing.preprocessTrainingData(\
                                                                 trainingDirPath)
-        
-        #debug
-        print ('classTokenList = {} '.format(classTokenList))
-        print ('uniqueTokenList = {}'.format(uniqueTokenList))
-        print ('nDocInClassArr = {}'.format(nDocsInClassArr))
-        print ('dirNameList = {}'.format(dirNameList))
-        #debug -ends
-#         
+        print ('STATUS: pre-processing of training data is done.')
+#         #debug
+#         print ('classTokenList = {} '.format(classTokenList))
+#         print ('uniqueTokenList = {}'.format(uniqueTokenList))
+#         print ('nDocInClassArr = {}'.format(nDocsInClassArr))
+#         print ('classNameList = {}'.format(classNameList))
+#         #debug -ends
+         
         totalDocs=np.sum(nDocsInClassArr)
         totalTermsInSllClasses = len(uniqueTokenList)
         trainMultinomialNaiveBayes = TrainMultinomialNaiveBayes()
-        priorProb,condProbList,NoOfClasses=trainMultinomialNaiveBayes.\
+        print('STATUS: training multinomial naive bayes begin:')
+        priorProbArr,condProbList,NoOfClasses=trainMultinomialNaiveBayes.\
                                     trainNaiveBayes(classlist=classTokenList,\
                                                     uniqueTokenList=uniqueTokenList,\
                                                NoOfDocsInClass=nDocsInClassArr,\
                                                totalDocs=totalDocs,\
                                                totalTermsInAllClasses = \
                                                         totalTermsInSllClasses)
-        
-        testingFileTokenList,currentFile = dataPreprocessing.preprocessTestingData(testingDirPath = testingDirPath)
-        #debug
-        print ('testingFileTokenDict = {} '.format(testingFileTokenList))
-        #debug -ends
-        predictedClass=trainMultinomialNaiveBayes.applyMultinomialNaiveBayes(NoOfClasses=NoOfClasses, priorProb=priorProb,\
-                                                                             condProbList=condProbList, TestVocab=testingFileTokenList)
-        
-        
-        
+        print('STATUS: training multinomial naive bayes done.')
+        testingFileTokenDict, fileActualClassDict = \
+                                dataPreprocessing.preprocessTestingData(\
+                                                testingDirPath = testingDirPath)
+#         #debug
+#         print ('testingFileTokenDict = {} '.format(testingFileTokenDict))
+#         #debug -ends
+        print ('STATUS: pre processing of test dataset begin;')
+        filePredictedClassDict = trainMultinomialNaiveBayes.classifyAllDocs(\
+                                        fileTokenDict = testingFileTokenDict,\
+                                        classNameList = classNameList,\
+                                        NoOfClasses = NoOfClasses,\
+                                        priorProbArr = priorProbArr,\
+                                        condProbList = condProbList)
+        print ('STATUS: pre processing of test dataset ends.')
+#         #debug
+#         print ('fileActualClassDict = {} '.format(fileActualClassDict))
+#         print ('filePredictedClassDict = {} '.format(filePredictedClassDict))
+#         #debug -ends
+        print ('STATUS: finding accuracy:')
+        predictionAccuracy, correctPrediction, inCorrectPrediction =\
+                             trainMultinomialNaiveBayes.findAccuracy(\
+                                filePredictedClassDict=filePredictedClassDict,\
+                                fileActualClassDict=fileActualClassDict)
+        print ('STATUS: Accuracy found')
+        return predictionAccuracy, correctPrediction, inCorrectPrediction
 #|------------------------naiveBayesTextClassification -ends-------------------|                   
     
     
@@ -86,14 +104,19 @@ if __name__ == '__main__':
             trainingDirPath = sys.argv[1]
             testingDirPath = sys.argv[2]
         else:
-#             trainingDirPath= '../dataset/5news-bydate-train'
-#             testingDirPath='../dataset/5news-bydate-test'
-            trainingDirPath= '../dataset/training'
-            testingDirPath='../dataset/testing'
+            trainingDirPath= '../dataset/5news-bydate-train'
+            testingDirPath='../dataset/5news-bydate-test'
+#             trainingDirPath= '../dataset/training'
+#             testingDirPath='../dataset/testing'
         
         naivebayesui = NaiveBayesUI()
-        naivebayesui.naiveBayesTextClassification(trainingDirPath, testingDirPath)
-        
-        
-        
-    
+        predictionAccuracy, correctPrediction, inCorrectPrediction =\
+                                    naivebayesui.naiveBayesTextClassification(\
+                                                trainingDirPath, testingDirPath)
+
+        print('\n')
+        print ('------------------OUTPUT--------------------------')
+        print ('correctPrediction = {} '.format(correctPrediction))
+        print ('inCorrectPrediction = {} '.format(inCorrectPrediction))
+        print ('predictionAccuracy = {} '.format(predictionAccuracy))
+        print ('--------------------------------------------------')
