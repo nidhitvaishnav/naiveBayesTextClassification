@@ -26,7 +26,7 @@ class NaiveBayesUI:
         """
         
         dataPreprocessing = DataPreprocessing()
-        classTokenList, uniqueTokenList, nDocsInClassArr, dirNameList = \
+        classTokenList,uniqueTokenList, nDocsInClassArr, dirNameList = \
                             dataPreprocessing.preprocessTrainingData(\
                                                                 trainingDirPath)
         
@@ -42,17 +42,18 @@ class NaiveBayesUI:
         trainMultinomialNaiveBayes = TrainMultinomialNaiveBayes()
         priorProb,condProbList,NoOfClasses=trainMultinomialNaiveBayes.\
                                     trainNaiveBayes(classlist=classTokenList,\
+                                                    uniqueTokenList=uniqueTokenList,\
                                                NoOfDocsInClass=nDocsInClassArr,\
                                                totalDocs=totalDocs,\
                                                totalTermsInAllClasses = \
                                                         totalTermsInSllClasses)
         
-        testingFileTokenDict = dataPreprocessing.preprocessTestingData(testingDirPath = testingDirPath)
+        testingFileTokenList,currentFile = dataPreprocessing.preprocessTestingData(testingDirPath = testingDirPath)
         #debug
-        print ('testingFileTokenDict = {} '.format(testingFileTokenDict))
+        print ('testingFileTokenDict = {} '.format(testingFileTokenList))
         #debug -ends
-#         predictedClass=trainMultinomialNaiveBayes.applyMultinomialNaiveBayes(NoOfClasses=NoOfClasses, priorProb=priorProb,\
-#                                                                               condProbList=condProbList, TestVocab=testingFileTokenDict)
+        predictedClass=trainMultinomialNaiveBayes.applyMultinomialNaiveBayes(NoOfClasses=NoOfClasses, priorProb=priorProb,\
+                                                                             condProbList=condProbList, TestVocab=testingFileTokenList)
         
         
         
